@@ -1,15 +1,26 @@
 'use client';
 
 import { useState } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function IglesiasPage() {
   const [nombre, setNombre] = useState('');
   const [ubicacion, setUbicacion] = useState('');
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log({ nombre, ubicacion });
-    alert('Iglesia registrada (simulación)');
+
+    const { error } = await supabase.from('iglesias').insert([
+      { nombre, ubicacion }
+    ]);
+
+    if (error) {
+      alert('Error al guardar');
+      console.error(error);
+      return;
+    }
+
+    alert('Iglesia guardada correctamente');
     setNombre('');
     setUbicacion('');
   };
